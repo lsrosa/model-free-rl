@@ -57,7 +57,7 @@ if __name__ == "__main__":
     optim = torch.optim.SGD(nn.parameters(), lr=1e-5)
     loss_f = torch.nn.MSELoss(reduction='sum')
     d_size = 500
-    for i in range(100):
+    for i in range(10000):
         optim.zero_grad()
         
         x = torch.rand(d_size, 2)
@@ -80,6 +80,7 @@ if __name__ == "__main__":
     #print(y, y_pred)
     ax.scatter(x[:,0], x[:,1], y, alpha = 0.5, label='label')
     ax.scatter(x[:,0], x[:,1], y_pred, alpha=0.5, label='pred')
+    print(nn.glue)
     plt.legend()
     plt.show()
 
