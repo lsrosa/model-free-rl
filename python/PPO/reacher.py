@@ -1,5 +1,4 @@
 # Adapted from: https://pytorch.org/tutorials/intermediate/reinforcement_ppo.html
-
 from collections import defaultdict
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -27,6 +26,10 @@ from NN import NN
 verbose = False
 model_folder = 'models/'
 plots_folder = 'plots/'
+if not os.path.exists(plots_folder):
+    os.makedirs(plots_folder)
+if not os.path.exists(model_folder):
+    os.makedirs(model_folder)
 
 is_fork = multiprocessing.get_start_method() == "fork"
 print('is fork: ', is_fork)
@@ -79,17 +82,16 @@ if verbose:
     print("reward_spec:", env.reward_spec)
     print("input_spec:", env.input_spec)
     print("action_spec (as defined by input_spec):", env.action_spec)
-check_env_specs(env)
+#check_env_specs(env)
+#torch.save(env.specs, model_folder+'specs')
 
-'''
-rollout = env.rollout(3)
-print("rollout of three steps:", rollout)
-print("Shape of the rollout TensorDict:", rollout.batch_size)
-'''
-
+observation_size = env.observation_spec['observation'].shape[0]
+action_size = env.action_spec.shape[-1]
+print('obs, action sizes: ', observation_size, action_size)
+# Define the Network
 network = NN(env)
-network.define_actor_network([num_cells, num_cells, num_cells, 2*env.action_spec.shape[-1]])
-network.define_value_network([num_cells, num_cells, num_cells, 1])
+network.define_actor_network([observation_size, num_cells, num_cells, num_cells, 2*action_size])
+network.define_value_network([observation_size, num_cells, num_cells, num_cells, 1])
 network.to(device)
 
 print("Running policy:", network.policy_module(env.reset()))
@@ -108,7 +110,6 @@ replay_buffer = ReplayBuffer(
     storage=LazyTensorStorage(max_size=frames_per_batch),
     sampler=SamplerWithoutReplacement(),
 )
-
 
 advantage_module = GAE(gamma=gamma, lmbda=lmbda, value_network=network.value_module, average_gae=True)
 
@@ -210,12 +211,11 @@ plt.title("Return (test)")
 plt.subplot(2, 2, 4)
 plt.plot(logs["eval step_count"])
 plt.title("Max step count (test)")
+
 plt.savefig(plots_folder + 'results.png')
 plt.show()
 
 # save policy
-if not os.path.exists(model_folder):
-    os.makedirs(model_folder)
 model_file = model_folder+'model.pt'
 torch.save(network.actor.state_dict(), model_file)
 env.close()

@@ -34,15 +34,12 @@ env = TransformedEnv(
     ),
 )
 
-# collects data on the transformed env
 env.transform[0].init_stats(num_iter=1000, reduce_dim=0, cat_dim=0)
-
-check_env_specs(env)
 
 # create, define and load the model
 num_cells = 256  # number of cells in each layer i.e. output dim.
 model = NN(env)
-model.define_actor_network([num_cells, num_cells, num_cells, 2*env.action_spec.shape[-1]])
+model.define_actor_network([11, num_cells, num_cells, num_cells, 2*2])
 # load model
 model.actor.load_state_dict(torch.load('models/model.pt'))
 model.actor.eval()

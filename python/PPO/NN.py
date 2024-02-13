@@ -12,19 +12,18 @@ class NN(torch.nn.Module):
     
     def __init__(self, env):
         super(NN, self).__init__()
-        self.device = env.device 
         self.env = env
 
     def define_actor_network(self, dimentions):
         self.actor_dimentions = dimentions
         self.actor = nn.Sequential()
  
-        for n in dimentions[:-1]:
-            self.actor.append(nn.LazyLinear(n))
+        for n_in, n_out in zip(dimentions[:-2], dimentions[1:-1]):
+            self.actor.append(nn.Linear(n_in, n_out))
             self.actor.append(nn.Tanh())
-        self.actor.append(nn.LazyLinear(dimentions[-1])) #output
+        self.actor.append(nn.Linear(dimentions[-2], dimentions[-1])) #output
         self.actor.append(NormalParamExtractor())
-       
+        
         _policy_module = TensorDictModule(
             self.actor, in_keys=["observation"], out_keys=["loc", "scale"]
         )
@@ -46,10 +45,10 @@ class NN(torch.nn.Module):
         self.value_dimentions = dimentions
         self.value_net = nn.Sequential()
 
-        for n in dimentions[:-1]:
-            self.value_net.append(nn.LazyLinear(n))
+        for n_in, n_out in zip(dimentions[:-2], dimentions[1:-1]):
+            self.value_net.append(nn.Linear(n_in, n_out))
             self.value_net.append(nn.Tanh())
-        self.value_net.append(nn.LazyLinear(dimentions[-1]))
+        self.value_net.append(nn.Linear(dimentions[-2], dimentions[-1]))
         
         self.value_module = ValueOperator(
             module=self.value_net,
