@@ -37,15 +37,16 @@ class NN(torch.nn.Module):
         self.nn1.append(nn.ReLU())
         self.nn2.append(nn.Linear(self.n2, self.nout))
         
+        self.glue = torch.empty(self.nglue, requires_grad = True)
+        
         for l in self.nn2.children():
             if isinstance(l, nn.Linear):
                 torch.nn.init.xavier_uniform_(l.weight)
                 l.bias.data.fill_(0.0)
 
     def forward(self, x):
-        _x = self.nn1(x).detach().numpy()
-        self.glue = torch.tensor(_x, requires_grad = True)
-        _y = self.nn2(self.glue)
+        _x = self.nn1(x) + self.glue
+        _y = self.nn2(_x)
         return _y
 
 def f(x):
