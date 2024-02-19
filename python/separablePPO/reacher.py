@@ -90,6 +90,8 @@ action_size = env.action_spec.shape[-1]
 print('obs, action sizes: ', observation_size, action_size)
 # Define the Network
 network = NN(env)
+network.create_jacobian_nn(2, 2, [10, 10, 10])
+exit()
 network.define_actor_network([observation_size, num_cells, num_cells, num_cells, 2*action_size])
 network.define_value_network([observation_size, num_cells, num_cells, num_cells, 1])
 network.to(device)
