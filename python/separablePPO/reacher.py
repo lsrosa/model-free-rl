@@ -91,7 +91,15 @@ print('obs, action sizes: ', observation_size, action_size)
 # Define the Network
 network = NN(env)
 network.create_jacobian_nn(2, 2, [10, 10, 10])
+print(network.jacobian)
+
+x = torch.rand(3, 2)
+y = torch.rand(3, 2, 2)
+l = network.loss_jacobian(x, y)
 exit()
+
+
+
 network.define_actor_network([observation_size, num_cells, num_cells, num_cells, 2*action_size])
 network.define_value_network([observation_size, num_cells, num_cells, num_cells, 1])
 network.to(device)

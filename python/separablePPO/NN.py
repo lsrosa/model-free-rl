@@ -8,11 +8,12 @@ from tensordict.nn import TensorDictModule
 from tensordict.nn.distributions import NormalParamExtractor
 from torchrl.modules import ProbabilisticActor, TanhNormal, ValueOperator
 
-# Sub networks
-from jacobian import create_jacobian_nn, forward_jacobian, train_jacobian
 
 class NN(torch.nn.Module):
-    def __init__(self, env, activation_type = nn.ReLU, initializer = nn.init.xavier_unifor_):
+    # Sub networks
+    from jacobian import create_jacobian_nn, forward_jacobian, loss_jacobian 
+    
+    def __init__(self, env, activation_type = nn.ReLU, initializer = nn.init.xavier_uniform_):
         super(NN, self).__init__()
         self.env = env
         self.activation_type = activation_type

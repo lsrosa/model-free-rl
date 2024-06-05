@@ -24,7 +24,7 @@ def create_jacobian_nn(self, n_joints, n_states, n_hidden_layers, activation = n
     # Loss and optimizer
     # TODO: pass as parameters
     self._loss_f_jacobian = nn.MSELoss(reduction='sum')
-    self._optim_jacobian = torch.optim.SGD(self.jacobian.parameters(), lr=1e-6)
+    self._optim_jacobian = torch.optim.SGD(self.jacobian.parameters(), lr=1e-4)
     return
 
 def forward_jacobian(self, x):
