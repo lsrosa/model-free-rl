@@ -8,11 +8,16 @@ from tensordict.nn import TensorDictModule
 from tensordict.nn.distributions import NormalParamExtractor
 from torchrl.modules import ProbabilisticActor, TanhNormal, ValueOperator
 
+
 class NN(torch.nn.Module):
+    # Sub networks
+    from jacobian import create_jacobian_nn, forward_jacobian, loss_jacobian 
     
-    def __init__(self, env):
+    def __init__(self, env, activation_type = nn.ReLU, initializer = nn.init.xavier_uniform_):
         super(NN, self).__init__()
         self.env = env
+        self.activation_type = activation_type
+        self.initializer = initializer
 
     def define_actor_network(self, dimentions):
         self.actor_dimentions = dimentions
@@ -20,7 +25,7 @@ class NN(torch.nn.Module):
  
         for n_in, n_out in zip(dimentions[:-2], dimentions[1:-1]):
             self.actor.append(nn.Linear(n_in, n_out))
-            self.actor.append(nn.Tanh())
+            self.actor.append(self.activation_type())
         self.actor.append(nn.Linear(dimentions[-2], dimentions[-1])) #output
         self.actor.append(NormalParamExtractor())
         
@@ -47,7 +52,7 @@ class NN(torch.nn.Module):
 
         for n_in, n_out in zip(dimentions[:-2], dimentions[1:-1]):
             self.value_net.append(nn.Linear(n_in, n_out))
-            self.value_net.append(nn.Tanh())
+            self.value_net.append(self.activation_type())
         self.value_net.append(nn.Linear(dimentions[-2], dimentions[-1]))
         
         self.value_module = ValueOperator(
