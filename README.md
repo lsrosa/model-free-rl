@@ -2,6 +2,7 @@
 
 ## System setup
 Ubuntu 23
+Python 3.11
 
 ```sh
 sudo apt install nvidia-driver-545
