@@ -84,7 +84,6 @@ ray==2.30.0
 referencing==0.35.1
 requests==2.31.0
 rich==13.7.1
--e git+https://github.com/DLR-RM/rl-baselines3-zoo@0c659c85ff8aacd040e8253831e790265313d213#egg=rl_zoo3
 rpds-py==0.18.1
 sb3_contrib==2.3.0
 scipy==1.13.1
