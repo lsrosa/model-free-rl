@@ -65,6 +65,7 @@ nvidia-nvtx-cu12==12.1.105
 optuna==3.6.1
 packaging==23.2
 pandas==2.2.1
+paretoset==1.2.3
 pathvalidate==3.2.0
 pillow==10.2.0
 plotly==5.18.0
